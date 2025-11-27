@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Славянский кликер</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="character-creator" class="creator-overlay hidden">
+    <div class="creator-panel">
+      <h2>Создание героя</h2>
+      <label>Имя героя <input id="hero-name" maxlength="16" placeholder="Иван"></label>
+      <div class="creator-grid">
+        <div class="creator-block">
+          <h4>Пол</h4>
+          <div class="toggle-row">
+            <button data-gender="male" class="toggle-btn active">Юноша</button>
+            <button data-gender="female" class="toggle-btn">Девица</button>
+          </div>
+        </div>
+        <div class="creator-block">
+          <h4>Голова</h4>
+          <select id="head-select"></select>
+        </div>
+        <div class="creator-block">
+          <h4>Торс</h4>
+          <select id="torso-select"></select>
+        </div>
+        <div class="creator-block">
+          <h4>Броня</h4>
+          <select id="armor-select"></select>
+        </div>
+        <div class="creator-block">
+          <h4>Оружие</h4>
+          <select id="weapon-select"></select>
+        </div>
+      </div>
+      <div class="creator-preview">
+        <div id="creator-hero" class="hero preview">
+          <img class="layer torso" alt="torso">
+          <img class="layer armor" alt="armor">
+          <img class="layer head" alt="head">
+          <img class="layer weapon" alt="weapon">
+        </div>
+      </div>
+      <div class="creator-actions">
+        <button id="creator-cancel" class="ghost">Случайно</button>
+        <button id="creator-confirm" class="primary">Начать сказание</button>
+      </div>
+    </div>
+  </div>
+  <div id="app">
+    <header class="top-bar">
+      <div class="logo">Былинный Кликер</div>
+      <div class="status-panel">
+        <div class="status-item" id="cp">CP 1</div>
+        <div class="status-item" id="biome">Биом: Злой лес</div>
+        <div class="status-item" id="day-slider"></div>
+        <div class="status-item" id="timer">04:00</div>
+        <div class="status-item" id="settings">⚙️</div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <aside class="active-buttons">
+        <button class="active-btn" id="btn-wand" title="Палочка-выручалочка">
+          <img src="sprites/Кнопка для случайного эффекта/Палочка выручалочка.png" alt="wand">
+        </button>
+        <button class="active-btn" id="btn-boots" title="Сапоги-скороходы">
+          <img src="sprites/Кнопка ускорения игры/Сапоги скороходы.png" alt="boots">
+        </button>
+        <button class="active-btn" id="btn-hat" title="Шапка-невидимка">
+          <img src="sprites/Кнопка чтобы на время убрать часть противников/Шапка невидимка.png" alt="hat">
+        </button>
+        <button class="active-btn" id="btn-comb" title="Волшебный гребень">
+          <img src="sprites/Кнопка изменения внешнего вида/Волшебный гребень.png" alt="comb">
+        </button>
+        <button class="active-btn" id="btn-ball" title="Волшебный клубочек">
+          <img src="sprites/Кнопка для путешествий/Волшебный клубочек.png" alt="ball">
+        </button>
+        <button class="active-btn" id="btn-flower" title="Цветик-семицветик">
+          <img src="sprites/Кнопка для игры в рулетку/Цветик семицветик.png" alt="flower">
+        </button>
+      </aside>
+
+      <section class="battle">
+        <div class="battle-bg layer-back"></div>
+        <div class="battle-bg layer-mid"></div>
+        <div id="hero" class="hero">
+          <img class="layer torso" src="sprites/кастомизация основного персонажа/Мужской базовый персонаж/Мужской базовый торс вариант 1.png" alt="torso">
+          <img class="layer head" src="sprites/кастомизация основного персонажа/Мужской базовый персонаж/Мужская голова вариант 1.png" alt="head">
+          <img class="layer armor" src="sprites/кастомизация основного персонажа/Броня/Мужская броня/1 уровень Молодецкий доспех.png" alt="armor">
+          <img class="layer weapon" src="sprites/кастомизация основного персонажа/Оружие/Брынькалка.png" alt="weapon">
+        </div>
+        <div id="enemies" class="enemies"></div>
+        <div id="enemy-count" class="wave-progress">ВРАГИ 60/60</div>
+        <div id="wave-timer" class="wave-timer">04:00</div>
+      </section>
+
+      <aside class="currency-panel">
+        <div class="currency">
+          <img src="sprites/Монеты/Медная монета.png" alt="Cu">
+          <div>
+            <div>Cu</div>
+            <div id="cu-value">0</div>
+          </div>
+        </div>
+        <div class="currency">
+          <img src="sprites/Монеты/Серебряная монета.png" alt="Ag">
+          <div>
+            <div>Ag</div>
+            <div id="ag-value">0</div>
+          </div>
+        </div>
+        <div class="currency">
+          <img src="sprites/Монеты/Золотая монета.png" alt="Au">
+          <div>
+            <div>Au</div>
+            <div id="au-value">0</div>
+          </div>
+        </div>
+        <div class="currency">
+          <div class="rune">Бы</div>
+          <div>
+            <div>Былины</div>
+            <div id="by-value">0</div>
+          </div>
+        </div>
+        <div class="currency">
+          <div class="rune">Под</div>
+          <div>
+            <div>Подвиги</div>
+            <div id="pd-value">0</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <section class="click-panel">
+      <button id="btn-larchik" class="click-btn">
+        <img src="sprites/Основная кнопка для клика -добычи монет/Волшебный ларчик.png" alt="Ларчик">
+        <span>Получить добычу</span>
+      </button>
+      <button id="btn-sword" class="click-btn">
+        <img src="sprites/Основная кнопка для клика -ускорения ударов/Меч кладенец.png" alt="Меч кладенец">
+        <span>Ударить</span>
+      </button>
+    </section>
+
+    <nav class="tabs">
+      <button data-tab="gathering" class="tab-btn active">Собирательство</button>
+      <button data-tab="heroes" class="tab-btn">Герои</button>
+      <button data-tab="upgrades" class="tab-btn">Улучшения</button>
+      <button data-tab="rebirth" class="tab-btn">Перерождение</button>
+      <button data-tab="shop" class="tab-btn">Магазин</button>
+      <button data-tab="pets" class="tab-btn">Питомцы</button>
+    </nav>
+
+    <section id="tab-content" class="tab-content"></section>
+  </div>
+  <script src="main.js" type="module"></script>
+</body>
+</html>
