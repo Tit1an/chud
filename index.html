@@ -12,30 +12,115 @@
       <div class="logo">Былинный Кликер</div>
       <div class="status-panel">
         <div class="status-item" id="cp">CP 1</div>
-        <div class="status-item" id="biome">Биом: Злой лес</div>
-        <div class="status-item" id="day-slider"></div>
+        <div class="status-item" id="day-info">День 1 • до босса 99</div>
+        <div class="status-item" id="biome">Враги: Злой лес</div>
+        <div class="status-item day-wrap">
+          <button id="day-prev" aria-label="Предыдущие дни">‹</button>
+          <div class="day-slider-frame">
+            <div class="status-item" id="day-slider"></div>
+          </div>
+          <button id="day-next" aria-label="Следующие дни">›</button>
+        </div>
         <div class="status-item" id="timer">04:00</div>
         <div class="status-item" id="settings">⚙️</div>
       </div>
     </header>
 
+    <div id="character-creator" class="overlay hidden">
+      <div class="creator-window">
+        <h2>Создание героя</h2>
+        <p class="subtitle">Выбери пол, имя и внешний вид перед первым боем.</p>
+        <div class="creator-grid">
+          <div class="creator-controls">
+            <label class="field">
+              <span>Пол</span>
+              <div class="radio-row">
+                <label><input type="radio" name="gender" value="male" checked> Молодец</label>
+                <label><input type="radio" name="gender" value="female"> Девица</label>
+              </div>
+            </label>
+            <label class="field">
+              <span>Имя героя</span>
+              <input type="text" id="hero-name" maxlength="16" placeholder="Иван" />
+            </label>
+            <div class="picker">
+              <div class="picker-label">Голова</div>
+              <div class="picker-row" data-picker="head">
+                <button class="picker-btn" data-dir="prev">⟵</button>
+                <span class="picker-value" id="head-name"></span>
+                <button class="picker-btn" data-dir="next">⟶</button>
+              </div>
+            </div>
+            <div class="picker">
+              <div class="picker-label">Торс</div>
+              <div class="picker-row" data-picker="torso">
+                <button class="picker-btn" data-dir="prev">⟵</button>
+                <span class="picker-value" id="torso-name"></span>
+                <button class="picker-btn" data-dir="next">⟶</button>
+              </div>
+            </div>
+            <div class="picker">
+              <div class="picker-label">Броня</div>
+              <div class="picker-row" data-picker="armor">
+                <button class="picker-btn" data-dir="prev">⟵</button>
+                <span class="picker-value" id="armor-name"></span>
+                <button class="picker-btn" data-dir="next">⟶</button>
+              </div>
+            </div>
+            <div class="picker">
+              <div class="picker-label">Оружие</div>
+              <div class="picker-row" data-picker="weapon">
+                <button class="picker-btn" data-dir="prev">⟵</button>
+                <span class="picker-value" id="weapon-name"></span>
+                <button class="picker-btn" data-dir="next">⟶</button>
+              </div>
+            </div>
+            <button id="creator-confirm" class="primary">Начать сказание</button>
+          </div>
+          <div class="creator-preview">
+            <div class="preview-frame">
+              <div id="preview-hero" class="hero preview">
+                <img class="layer torso" alt="torso">
+                <img class="layer armor" alt="armor">
+                <img class="layer head" alt="head">
+                <img class="layer weapon" alt="weapon">
+              </div>
+            </div>
+            <p class="small">Элементы можно будет менять позже через Волшебный гребень.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <main class="main-layout">
       <aside class="active-buttons">
-        <button class="active-btn" id="btn-wand" title="Палочка-выручалочка">🎇</button>
-        <button class="active-btn" id="btn-boots" title="Сапоги-скороходы">🥾</button>
-        <button class="active-btn" id="btn-hat" title="Шапка-невидимка">🎩</button>
-        <button class="active-btn" id="btn-comb" title="Волшебный гребень">💇</button>
-        <button class="active-btn" id="btn-ball" title="Волшебный клубочек">🧶</button>
-        <button class="active-btn" id="btn-flower" title="Цветик-семицветик">🌸</button>
+        <button class="active-btn" id="btn-wand" title="Палочка-выручалочка">
+          <img src="sprites/Кнопка для случайного эффекта/Палочка выручалочка.png" alt="Палочка-выручалочка">
+        </button>
+        <button class="active-btn" id="btn-boots" title="Сапоги-скороходы">
+          <img src="sprites/Кнопка ускорения игры/Сапоги скороходы.png" alt="Сапоги-скороходы">
+        </button>
+        <button class="active-btn" id="btn-hat" title="Шапка-невидимка">
+          <img src="sprites/Кнопка чтобы на время убрать часть противников/Шапка невидимка.png" alt="Шапка-невидимка">
+        </button>
+        <button class="active-btn" id="btn-comb" title="Волшебный гребень">
+          <img src="sprites/Кнопка изменения внешнего вида/Волшебный гребень.png" alt="Волшебный гребень">
+        </button>
+        <button class="active-btn" id="btn-ball" title="Волшебный клубочек">
+          <img src="sprites/Кнопка для путешествий/Волшебный клубочек.png" alt="Волшебный клубочек">
+        </button>
+        <button class="active-btn" id="btn-flower" title="Цветик-семицветик">
+          <img src="sprites/Кнопка для игры в рулетку/Цветик семицветик.png" alt="Цветик-семицветик">
+        </button>
       </aside>
 
       <section class="battle">
         <div class="battle-bg"></div>
         <div id="hero" class="hero">
-          <img class="layer torso" src="sprites/кастомизация основного персонажа/Мужской базовый персонаж/Мужской базовый торс вариант 1.png" alt="torso">
-          <img class="layer head" src="sprites/кастомизация основного персонажа/Мужской базовый персонаж/Мужская голова вариант 1.png" alt="head">
-          <img class="layer armor" src="sprites/кастомизация основного персонажа/Броня/Мужская броня/1 уровень Молодецкий доспех.png" alt="armor">
-          <img class="layer weapon" src="sprites/кастомизация основного персонажа/Оружие/Брынькалка.png" alt="weapon">
+          <img class="layer torso" alt="torso">
+          <img class="layer armor" alt="armor">
+          <img class="layer head" alt="head">
+          <img class="layer weapon" alt="weapon">
         </div>
         <div id="enemies" class="enemies"></div>
         <div id="enemy-count" class="wave-progress">ВРАГИ 60/60</div>
@@ -102,6 +187,18 @@
     </nav>
 
     <section id="tab-content" class="tab-content"></section>
+  </div>
+
+  <div id="map-overlay" class="overlay hidden">
+    <div class="map-window">
+      <div class="map-header">
+        <h3>Карта путешествий</h3>
+        <button id="map-close" aria-label="Закрыть карту">✕</button>
+      </div>
+      <p class="subtitle">Старт из деревни в центре. Наведи, чтобы увидеть бонусы и требования.</p>
+      <div class="map-grid" id="map-grid"></div>
+      <div class="map-tooltip" id="map-tooltip"></div>
+    </div>
   </div>
   <script src="main.js" type="module"></script>
 </body>
