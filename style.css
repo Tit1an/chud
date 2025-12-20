@@ -6,7 +6,7 @@
 }
 
 body {
-  background: #050608;
+  background: #050608 url("sprites/Фоны/Фон прохождения дня 1.png") center/cover fixed;
   color: #f5f1e6;
 }
 
@@ -16,6 +16,46 @@ body {
   border: 4px solid #7b4a21;
   background: #15100c;
   box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+/* ЗАСТАВКА */
+
+#splash-screen {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top, rgba(10, 7, 5, 0.6), rgba(5, 4, 3, 0.95)),
+    url("sprites/Фоны/Фон прохождения дня 2.png") center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 80;
+}
+
+#splash-screen.hidden {
+  display: none;
+}
+
+.splash-content {
+  text-align: center;
+  padding: 28px 32px;
+  background: rgba(15, 10, 6, 0.8);
+  border: 3px solid #7b4a21;
+  border-radius: 8px;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.7);
+}
+
+.splash-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #f5d38b;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+  margin-bottom: 6px;
+}
+
+.splash-subtitle {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-bottom: 18px;
 }
 
 /* ВЕРХНЯЯ ПАНЕЛЬ */
@@ -32,6 +72,13 @@ body {
   display: flex;
   gap: 10px;
   align-items: center;
+}
+
+.game-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #f5d38b;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
 }
 
 .top-center {
@@ -157,6 +204,10 @@ body {
   transform: translateX(-50%);
 }
 
+#mount-sprite {
+  animation: mount-idle 3s ease-in-out infinite;
+}
+
 #mount-sprite img {
   display: block;
 }
@@ -168,6 +219,7 @@ body {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
+  animation: hero-idle 2.6s ease-in-out infinite;
 }
 
 .hero-layer {
@@ -191,10 +243,19 @@ body {
   bottom: 0;
   width: 96px;
   height: 120px;
+  image-rendering: pixelated;
+  animation: enemy-approach var(--approach-duration, 8s) linear infinite;
+  will-change: transform;
+}
+
+.enemy-sprite {
+  position: absolute;
+  inset: 0;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: bottom center;
   image-rendering: pixelated;
+  animation: enemy-wobble 1.6s ease-in-out infinite;
 }
 
 .enemy .hp-bar {
@@ -204,6 +265,7 @@ body {
   right: 8px;
   height: 4px;
   background: rgba(0,0,0,0.6);
+  z-index: 2;
 }
 
 .enemy .hp-bar-inner {
@@ -263,6 +325,32 @@ body {
   transform-origin: bottom;
   transform: scaleY(0);
   pointer-events: none;
+}
+
+.merchant-float {
+  position: absolute;
+  right: 16px;
+  top: 24px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid #c89b3c;
+  background: rgba(26,16,11,0.9);
+  cursor: pointer;
+  z-index: 3;
+  box-shadow: 0 0 12px rgba(0,0,0,0.6);
+  animation: merchant-bob 2.2s ease-in-out infinite;
+}
+
+.merchant-float.hidden {
+  display: none;
+}
+
+.merchant-float img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
 }
 
 /* НИЖНИЕ ВКЛАДКИ */
@@ -555,4 +643,61 @@ select {
 
 #map-grid::-webkit-scrollbar-thumb {
   background: #7b4a21;
+}
+
+@keyframes enemy-wobble {
+  0% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(2deg);
+  }
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+}
+
+@keyframes enemy-approach {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(var(--approach-x, -140px));
+  }
+}
+
+@keyframes hero-idle {
+  0% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-4px);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes mount-idle {
+  0% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-3px);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes merchant-bob {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }

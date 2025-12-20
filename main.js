@@ -18,7 +18,7 @@
 
   // Constants controlling game pacing.
   const WAVE_DURATION = 240; // seconds per wave
-  const ENEMIES_PER_WAVE = 40; // number of enemies in a normal wave
+  const ENEMIES_PER_WAVE = 60; // number of enemies in a normal wave
 
   // Cooldown definitions for each skill. Times are in seconds.
   const SKILL_CONFIG = {
@@ -26,7 +26,7 @@
     wand:   { cd: 1800, duration: 60 },  // Палочка-выручалочка
     boots:  { cd: 1800, duration: 60 },  // Сапоги-скороходы
     hat:    { cd: 1800, duration: 0 },   // Шапка-невидимка
-    comb:   { cd: 300,  duration: 0 },   // Волшебный гребень
+    comb:   { cd: 1800, duration: 0 },   // Волшебный гребень
     ball:   { cd: 0,    duration: 0 }    // Волшебный клубочек (карта)
   };
 
@@ -714,6 +714,8 @@
    * elements. This reduces repeated document.getElementById calls.
    */
   function cacheDom() {
+    dom.splashScreen = document.getElementById('splash-screen');
+    dom.startGameBtn = document.getElementById('start-game-btn');
     dom.cuAmount = document.getElementById('cu-amount');
     dom.agAmount = document.getElementById('ag-amount');
     dom.auAmount = document.getElementById('au-amount');
@@ -779,6 +781,7 @@
     dom.merchantText = document.getElementById('merchant-text');
     dom.merchantAccept = document.getElementById('merchant-accept-btn');
     dom.merchantDecline = document.getElementById('merchant-decline-btn');
+    dom.merchantFloat = document.getElementById('merchant-float');
 
     // Skill buttons
     dom.skillFlower = document.getElementById('skill-flower');
@@ -796,6 +799,7 @@
    * creation, and ensures the game saves before the page unloads.
    */
   function setupEventListeners() {
+    dom.startGameBtn.addEventListener('click', onStartGame);
     dom.clickGoldBtn.addEventListener('click', onGoldClick);
     dom.clickAttackBtn.addEventListener('click', onAttackClick);
 
@@ -827,7 +831,8 @@
 
     // Merchant modal buttons
     dom.merchantAccept.addEventListener('click', onMerchantAccept);
-    dom.merchantDecline.addEventListener('click', () => hideElement(dom.merchantBackdrop));
+    dom.merchantDecline.addEventListener('click', onMerchantDecline);
+    dom.merchantFloat.addEventListener('click', onMerchantFound);
 
     // Skill buttons
     dom.skillFlower.addEventListener('click', () => useSkill('flower'));
@@ -859,6 +864,14 @@
     el.classList.add('hidden');
   }
 
+  function showSplash() {
+    showElement(dom.splashScreen);
+  }
+
+  function hideSplash() {
+    hideElement(dom.splashScreen);
+  }
+
   // Convert large numbers to formatted string with suffixes.
   function formatNumber(n) {
     if (n < 1000) return n.toFixed(0);
@@ -878,6 +891,7 @@
 
   // Open character creation modal and populate options.
   function openCharacterCreation() {
+    hideSplash();
     refreshCharacterCreationOptions();
     updateCharacterPreview();
     showElement(dom.ccBackdrop);
@@ -976,9 +990,14 @@
     state.heroConfig.name = name;
     // Player chooses final appearance; apply sprites now.
     hideElement(dom.ccBackdrop);
+    hideSplash();
     applyHeroSprites();
     startNewWave();
     saveGameThrottled();
+  }
+
+  function onStartGame() {
+    openCharacterCreation();
   }
 
   // Apply the main hero sprites to the battle screen using the
@@ -1058,8 +1077,10 @@
 
     const enemyEl = document.createElement('div');
     enemyEl.className = 'enemy';
+    const enemySprite = document.createElement('div');
+    enemySprite.className = 'enemy-sprite';
     if (sprite) {
-      enemyEl.style.backgroundImage = 'url(' + sprite + ')';
+      enemySprite.style.backgroundImage = 'url(' + sprite + ')';
     }
     const hpBar = document.createElement('div');
     hpBar.className = 'hp-bar';
@@ -1067,10 +1088,15 @@
     hpBarInner.className = 'hp-bar-inner';
     hpBar.appendChild(hpBarInner);
     enemyEl.appendChild(hpBar);
+    enemyEl.appendChild(enemySprite);
 
     const width = dom.enemiesArea.clientWidth || 600;
     const x = 80 + Math.random() * (width - 120);
     enemyEl.style.left = x + 'px';
+    const approach = Math.max(60, x - 20);
+    enemyEl.style.setProperty('--approach-x', `-${approach}px`);
+    const duration = 6 + Math.random() * 6;
+    enemyEl.style.setProperty('--approach-duration', `${duration}s`);
 
     return {
       hp: hp,
@@ -1897,16 +1923,32 @@
     state.merchant.timeToNext -= dt;
     if (state.merchant.timeToNext <= 0) {
       state.merchant.active = true;
-      state.merchant.timeToNext = 180 + Math.random() * 60;
-      showElement(dom.merchantBackdrop);
-      dom.merchantText.textContent = 'Заморский купец появился и ждёт вашего решения.';
+      state.merchant.timeToNext = 0;
+      showElement(dom.merchantFloat);
     }
+  }
+
+  function onMerchantFound() {
+    if (!state.merchant.active) return;
+    hideElement(dom.merchantFloat);
+    showElement(dom.merchantBackdrop);
+    dom.merchantText.textContent = 'Заморский купец появился и ждёт вашего решения.';
   }
 
   function onMerchantAccept() {
     giveMerchantReward();
+    closeMerchant();
+  }
+
+  function onMerchantDecline() {
+    closeMerchant();
+  }
+
+  function closeMerchant() {
     state.merchant.active = false;
+    state.merchant.timeToNext = 180;
     hideElement(dom.merchantBackdrop);
+    hideElement(dom.merchantFloat);
   }
 
   function giveMerchantReward() {
@@ -2119,9 +2161,10 @@
       renderAchievements();
       if (state.heroConfig.name) {
         applyHeroSprites();
+        hideSplash();
         startNewWave();
       } else {
-        openCharacterCreation();
+        showSplash();
       }
     } catch (e) {
       console.error('Не удалось загрузить игру:', e);
